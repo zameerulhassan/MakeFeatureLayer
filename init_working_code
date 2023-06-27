@@ -1,0 +1,31 @@
+# MakeFeatureLayer
+'''
+1- arcpy.MakeFeatureLayer_management
+2- arcpy.SelectLayerByAttribute_management
+2- arcpy.SelectLayerByLocation_management
+3- arcpy.GetCount_management
+'''
+env.workspace = r"C:\Data.gdb"
+fc = "CityBoundaries"
+gdb= r"C:\Data.gdb"
+Feature_Layer= arcpy.MakeFeatureLayer_management(fc, "CityBound_Layer")
+delimitedField = arcpy.AddFieldDelimiters(fc, "STATUS")
+# SelectLayerByAttribute_management
+arcpy.SelectLayerByAttribute_management(Feature_Layer, "NEW SELECTION", delimitedField + "LIKE 'HELOTES' ")
+Select_Coutn=arcpy.GetCount_management(Feature_Layer)
+print("The number of selected records is: ", str(Select_Coutn))
+
+arcpy.FeatureClassToFeatureClass_conversion(Feature_Layer,gdb,"selected_city")
+print("Selected City feature class is created")
+
+#SelectLayerByLocation_management
+env.workspace = r"C:\Data.gdb"
+gdb= r"C:\Data.gdb"
+inputFC = "Crimes2009"
+CamparisonFC = "CityBoundaries"
+Feature_Layer=arcpy.MakeFeatureLayer_management(inputFC,"Crimes2009_Layer")
+arcpy.SelectLayerByLocation_management(Feature_Layer, "COMPLETELY_WITHIN", CamparisonFC)
+Select_Count= arcpy.GetCount_management(Feature_Layer)
+print("The number of selected records is: ", str(Select_Count))
+arcpy.management.CopyFeatures(Feature_Layer, "CrimesWithinCity")
+print("CrimesWithinCity  feature class is created")
